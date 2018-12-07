@@ -29,9 +29,6 @@ loader.setIncludeFiles([
     '/node_modules/@material/elevation/mdc-elevation.scss',
     '/node_modules/@material/rtl/_mixins.scss',
     '/node_modules/@material/base/_mixins.scss',
-    '/index.scss',
-    '/home.scss',
-    '/about.scss',
 ]);
 const editor = document.querySelector('.app-editor');
 const editorContent = editor.textContent;

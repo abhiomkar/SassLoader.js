@@ -1,6 +1,0 @@
-@import '@material/button/mdc-button';
-@import '@material/button/mixins';
-
-.mdc-button {
-  @include mdc-button-shape-radius(50%);
-}
