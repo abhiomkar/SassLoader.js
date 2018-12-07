@@ -1,0 +1,17 @@
+{
+  "name": "sass-js-loader",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "sass.js": "^0.10.13"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Abhinay Omkar",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {}
+}
