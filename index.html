@@ -6,14 +6,26 @@
   <link rel="stylesheet" href="./style.css"></head>
 </head>
 <body>
+  <h1 class="app-title">SassLoader.js</h1>
   <div class="app hidden">
-    <button class="mdc-button">Button</button>
+    <div class="app-preview">
+      <button class="mdc-button mdc-button--unelevated">Button</button>
+    </div>
+    <pre class="app-editor" contenteditable="true">
+@import '@material/button/mdc-button';
+@import '@material/button/mixins';
+
+.mdc-button {
+  @include mdc-button-shape-radius(50%);
+}
+    </pre>
   </div>
 
   <div class="debug-container">
     <code class="debug-status">Sass compiling...</code>
     <code class="debug-substatus"></code>
   </div>
+  <code class="debug-status-with-preview"></code>
   <script src="node_modules/sass.js/dist/sass.js"></script>
   <script src="sass-loader.js"></script>
   <script src="index.js"></script>

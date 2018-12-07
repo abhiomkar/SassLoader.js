@@ -1,5 +1,5 @@
-const loader = new SassLoader(
-  [
+const loader = new SassLoader()
+loader.setIncludeFiles([
     '/node_modules/@material/shape/_functions.scss',
     '/node_modules/@material/shape/_variables.scss',
     '/node_modules/@material/shape/_mixins.scss',
@@ -32,14 +32,31 @@ const loader = new SassLoader(
     '/index.scss',
     '/home.scss',
     '/about.scss',
-  ],
-  '/index.scss',
-);
-loader.compile()
+]);
+const editor = document.querySelector('.app-editor');
+const editorContent = editor.textContent;
+loader.compile(editorContent)
   .then(() => {
     document.querySelector('.app').classList.remove('hidden');
     document.querySelector('.debug-container').classList.add('hidden');
   });
+
+const debugOnPreviewEl = document.querySelector('.debug-status-with-preview');
+
+let inputTimer;
+editor.addEventListener('input', () => {
+  if (inputTimer) clearTimeout(inputTimer);
+  inputTimer = setTimeout(() => onInput(), 1200);
+});
+
+const onInput = () => {
+  loader.compile(editor.textContent)
+    .then(() => {
+      debugOnPreviewEl.textContent = "Done.";
+    });
+  debugOnPreviewEl.textContent = "Compiling...";
+};
+
 loader.onImport = (file) => {
   document.querySelector('.debug-substatus').textContent = file;
 };

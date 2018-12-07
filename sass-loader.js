@@ -4,6 +4,7 @@ class SassLoader {
     this.files = includeFiles;
     this.filesLoaded = [];
     this.sass;
+    this.pendingCompilePromise = null;
 
     this.init();
   }
@@ -11,6 +12,10 @@ class SassLoader {
   init() {
     this.sass = new Sass();
     this.initImporter();
+  }
+
+  setIncludeFiles(files) {
+    this.files = files;
   }
 
   initImporter() {
@@ -68,6 +73,10 @@ class SassLoader {
     return this.filesLoaded.indexOf(filePath) >= 0;
   }
 
+  isAllFilesLoaded() {
+    return this.files.every((file) => this.isFileLoaded(file));
+  }
+
   writeFile(filePath, content) {
     return new Promise((resolve, reject) => {
       this.sass.writeFile(filePath, content, (success) => success ? resolve() : reject());
@@ -76,7 +85,33 @@ class SassLoader {
 
   onImport(file) {}
 
-  compile() {
+  compile(content) {
+    if (this.pendingCompilePromise) {
+      Promise.reject(this.pendingCompilePromise);
+    }
+
+    if (this.isAllFilesLoaded()) {
+      this.pendingCompilePromise = new Promise((resolve) => {
+        this.sass.compile(content, (result) => {
+          this.inject(result.text);
+          this.pendingCompilePromise = false;
+          resolve();
+        });
+      });
+    } else {
+      this.pendingCompilePromise = new Promise((resolve) => {
+        this.fetchFiles().then(() => this.sass.compile(content, (result) => {
+          this.inject(result.text);
+          this.pendingCompilePromise = false;
+          resolve();
+        }));
+      });
+    }
+
+    return this.pendingCompilePromise;
+  }
+
+  compileFile() {
     return new Promise((resolve) => {
       this.fetchFiles()
         .then(() => {
@@ -92,9 +127,15 @@ class SassLoader {
   }
 
   inject(content) {
-    const styleEl = document.createElement("style");
-    styleEl.type = "text/css";
+    let styleEl = document.querySelector('style.sass-loader');
+
+    if (!styleEl) {
+      styleEl = document.createElement("style");
+      styleEl.type = "text/css";
+      styleEl.classList.add('sass-loader');
+      document.body.appendChild(styleEl);
+    }
+
     styleEl.innerHTML = content;
-    document.body.appendChild(styleEl);
   }
 }
