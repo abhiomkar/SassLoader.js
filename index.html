@@ -3,10 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <title>Sass.js Loader Example</title>
+  <link rel="stylesheet" href="./style.css"></head>
 </head>
 <body>
-  <code>> Check console</code>
+  <div class="app hidden">
+    <button class="mdc-button">Button</button>
+  </div>
+
+  <div class="debug-container">
+    <code class="debug-status">Sass compiling...</code>
+    <code class="debug-substatus"></code>
+  </div>
   <script src="node_modules/sass.js/dist/sass.js"></script>
+  <script src="sass-loader.js"></script>
   <script src="index.js"></script>
 </body>
 </html>

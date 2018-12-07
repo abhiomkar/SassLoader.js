@@ -1,93 +1,45 @@
-class SassLoader {
-  constructor(includeFiles, entryFile) {
-    this.entryFile = entryFile;
-    this.files = includeFiles;
-    this.filesLoaded = [];
-    this.sass;
-
-    this.init();
-  }
-
-  init() {
-    this.sass = new Sass();
-
-    this.initImporter();
-    this.fetchFiles()
-      .then(() => this.compile());
-  }
-
-  initImporter() {
-    this.sass.importer((request, done) => {
-      console.log('import: ', request.current);
-      if (request.path) {
-        done();
-      } else if (request.current.indexOf('@material/') === 0) {
-        done({
-          path: this.getPath(request.current),
-        });
-      } else {
-        done();
-      }
-    });
-  }
-
-  getPath(name) {
-    let path = `/node_modules/${name}.scss`;
-    if (this.files.indexOf(path) === -1) {
-      path = path
-        .split('/')
-        .map((word, index, arr) => {
-          if (index === arr.length - 1) {
-            return '_' + word;
-          } else {
-            return word;
-          }
-        })
-        .join('/');
-    }
-
-    path = '/sass' + path;
-    return path;
-  }
-
-  fetchFiles() {
-    return new Promise((resolve) => {
-      this.files.forEach((file) => {
-        fetch(file)
-          .then((response) => response.text())
-          .then((content) => {
-            this.writeFile(file, content)
-              .then(() => {
-                this.filesLoaded.push(file);
-                if (this.filesLoaded.length === this.files.length) resolve();
-              });
-          });
-      });
-    });
-  }
-
-  isFileLoaded(filePath) {
-    return this.filesLoaded.indexOf(filePath) >= 0;
-  }
-
-  writeFile(filePath, content) {
-    return new Promise((resolve, reject) => {
-      this.sass.writeFile(filePath, content, (success) => success ? resolve() : reject());
-    });
-  }
-
-  compile() {
-    this.sass.compileFile(this.entryFile, (result) => {
-      console.log('result: ', result);
-    });
-  }
-}
-
-new SassLoader(
+const loader = new SassLoader(
   [
+    '/node_modules/@material/shape/_functions.scss',
+    '/node_modules/@material/shape/_variables.scss',
+    '/node_modules/@material/shape/_mixins.scss',
+    '/node_modules/@material/animation/_functions.scss',
+    '/node_modules/@material/animation/_variables.scss',
+    '/node_modules/@material/ripple/_functions.scss',
+    '/node_modules/@material/ripple/_variables.scss',
+    '/node_modules/@material/ripple/mdc-ripple.scss',
+    '/node_modules/@material/ripple/common.scss',
+    '/node_modules/@material/ripple/_keyframes.scss',
+    '/node_modules/@material/ripple/_mixins.scss',
+    '/node_modules/@material/button/_variables.scss',
+    '/node_modules/@material/button/_mixins.scss',
+    '/node_modules/@material/button/mdc-button.scss',
+    '/node_modules/@material/theme/mdc-theme.scss',
+    '/node_modules/@material/theme/_functions.scss',
+    '/node_modules/@material/theme/_variables.scss',
+    '/node_modules/@material/theme/_color-palette.scss',
+    '/node_modules/@material/theme/_mixins.scss',
+    '/node_modules/@material/theme/_constants.scss',
+    '/node_modules/@material/typography/_functions.scss',
+    '/node_modules/@material/typography/_variables.scss',
+    '/node_modules/@material/typography/mdc-typography.scss',
+    '/node_modules/@material/typography/_mixins.scss',
+    '/node_modules/@material/elevation/_variables.scss',
+    '/node_modules/@material/elevation/_mixins.scss',
+    '/node_modules/@material/elevation/mdc-elevation.scss',
+    '/node_modules/@material/rtl/_mixins.scss',
+    '/node_modules/@material/base/_mixins.scss',
     '/index.scss',
     '/home.scss',
     '/about.scss',
   ],
-  'index.scss',
+  '/index.scss',
 );
+loader.compile()
+  .then(() => {
+    document.querySelector('.app').classList.remove('hidden');
+    document.querySelector('.debug-container').classList.add('hidden');
+  });
+loader.onImport = (file) => {
+  document.querySelector('.debug-substatus').textContent = file;
+};

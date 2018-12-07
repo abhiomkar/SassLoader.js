@@ -1,0 +1,30 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+}
+
+.debug-container {
+  position: absolute;
+  top: 48px;
+  left: 48px;
+}
+
+.app {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
+
+.debug-status,
+.debug-substatus {
+  display: block;
+}
+
+.hidden {
+  display: none;
+}
