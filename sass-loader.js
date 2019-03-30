@@ -1,5 +1,3 @@
-import Sass from 'sass.js';
-
 class SassLoader {
   constructor(includeFiles, entryFile) {
     this.entryFile = entryFile;
