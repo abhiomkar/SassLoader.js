@@ -139,3 +139,5 @@ class SassLoader {
     styleEl.innerHTML = content;
   }
 }
+
+export default SassLoader;
